@@ -11,7 +11,6 @@ var margin = {
 var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
-// Create an SVG wrapper, append an SVG group that will hold our chart, and shift the latter by left and top margins.
 var svg = d3.select("body")
   .append("svg")
   .attr("width", svgWidth)
@@ -22,7 +21,6 @@ var chartGroup = svg.append("g")
 
 d3.select("body").append("div").attr("class", "tooltip").style("opacity", 0);
 
-// Import Data
 d3.csv("/data/data.csv", function(err, healthData) {
   if (err) throw err;
 console.log(healthData)
@@ -33,13 +31,9 @@ console.log(healthData)
     data.healthcare = +data.healthcare;
   });
 
-  // Step 2: Create scale functions
-  // ==============================
   var xLinearScale = d3.scaleLinear().range([0, width]);
   var yLinearScale = d3.scaleLinear().range([height, 0]);
 
-  // Step 3: Create axis functions
-  // ==============================
   var bottomAxis = d3.axisBottom(xLinearScale);
   var leftAxis = d3.axisLeft(yLinearScale);
 
@@ -69,8 +63,6 @@ console.log(healthData)
   console.log(xMin);
   console.log(yMax);
 
-  // Step 4: Append Axes to the chart
-  // ==============================
   chartGroup.append("g")
     .attr("transform", `translate(0, ${height})`)
     .call(bottomAxis);
@@ -78,8 +70,6 @@ console.log(healthData)
   chartGroup.append("g")
     .call(leftAxis);
 
-   // Step 5: Create Circles
-  // ==============================
   var circlesGroup = chartGroup.selectAll("circle")
   .data(healthData)
   .enter()
@@ -93,8 +83,7 @@ console.log(healthData)
   .on("mouseout", function(data, index) {
     toolTip.hide(data);
   });
-  // Step 6: Initialize tool tip
-  // ==============================
+
   var toolTip = d3.tip()
     .attr("class", "tooltip")
     .offset([80, -60])
@@ -102,12 +91,9 @@ console.log(healthData)
       return (abbr + '%');
       });
 
-  // Step 7: Create tooltip in the chart
-  // ==============================
   chartGroup.call(toolTip);
 
-  // Step 8: Create event listeners to display and hide the tooltip
-  // ==============================
+
   circlesGroup.on("click", function(data) {
     toolTip.show(data);
   })
